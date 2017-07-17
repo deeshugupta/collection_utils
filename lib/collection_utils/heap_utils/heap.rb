@@ -15,6 +15,15 @@ module CollectionUtils
          return @heap.first
        end
 
+       def push(element)
+         @heap << element
+       end
+
+       def pop
+         element = @heap.pop
+         return element
+       end
+
        def left_child(parent = 0)
          left = (2*parent + 1)
          return nil, nil if @heap[left].nil?
@@ -45,16 +54,34 @@ module CollectionUtils
          queue.enqueue({element: @heap.first, index: 0})
          while true do
            node = queue.dequeue
+           break if node.nil?
            left = left_child(node[:index])
            right = right_child(node[:index])
            yield(node[:element]) if block_given?
            queue.enqueue({element: left.first, index: left.last}) if !left.first.nil?
            queue.enqueue({element: right.first, index: right.last}) if !right.first.nil?
-           break if left.first.nil? && right.first 
+           break if left.first.nil? && right.first
+         end
+
+       end
+
+       def dfs
+         stack = CollectionUtils::Stack.new
+         stack.push({element: @heap.first, index: 0})
+         while true do
+           node = stack.pop
+           break if node.nil?
+           left = left_child(node[:index])
+           right = right_child(node[:index])
+           yield(node[:element]) if block_given?
+           stack.push({element: left.first, index: left.last}) if !left.first.nil?
+           stack.push({element: right.first, index: right.last}) if !right.first.nil?
+           break if left.first.nil? && right.first
          end
 
        end
 
     end
+    Tree = Heap
   end
 end
