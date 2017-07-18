@@ -1,4 +1,4 @@
-# CollectionUtils
+# CollectionUtils [![Build Status](https://travis-ci.org/deeshugupta/collection_utils.svg?branch=master)](https://travis-ci.org/deeshugupta/collection_utils)
 
 CollectionUtils provide with basic collection templates like stack, queues and heaps e.t.c for easier development. 
 
