@@ -36,6 +36,16 @@ module CollectionUtils
          return @heap[right], right
        end
 
+       def assign_left(parent =0, node)
+         left = (2*parent + 1)
+         @heap[left] = node
+       end
+
+       def assign_right(parent =0, node)
+         right = (2*parent + 2)
+         @heap[right] = node
+       end
+
        def parent(child = 0)
          par = child/2
          return @heap[par], par
@@ -46,7 +56,7 @@ module CollectionUtils
        end
 
        def is_empty?
-         return @heap.size == 0
+         return size == 0
        end
 
        def bfs

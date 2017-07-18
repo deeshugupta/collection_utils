@@ -1,7 +1,7 @@
 require_relative './heap'
 module CollectionUtils
   module HeapUtils
-    class MinHeap < Heap
+    class MaxHeap < Heap
 
       private
       attr_accessor :heap
@@ -16,23 +16,23 @@ module CollectionUtils
       def heapify(node)
         left = left_child(node[:index]).first
         right = right_child(node[:index]).first
-        smallest = node
-        if !left.nil? && left[:element] < node[:element]
-          smallest = left
+        largest = node
+        if !left.nil? && left[:element] >= node[:element]
+          largest = left
         end
 
-        if !right.nil? && right[:element] < smallest[:element]
-          smallest = right
+        if !right.nil? && right[:element] >= largest[:element]
+          largest = right
         end
 
-        if smallest != node
-          exchange(smallest, node)
-          heapify(smallest)
+        if largest != node
+          exchange(largest, node)
+          heapify(largest)
         end
 
       end
 
-      def min
+      def max
         @heap.first
       end
 
@@ -53,32 +53,32 @@ module CollectionUtils
         @heap << value
         i = @heap.size - 1
         node, index = parent(i)
-        while i != 0 && @heap[i][:element] < node[:element] do
+        while i != 0 && @heap[i][:element] >= node[:element] do
           exchange(@heap[i], node)
           i = index
           node, index = parent(i)
         end
       end
 
-      def get_min
+      def get_max
         return if is_empty?
-        return min[:element]
+        return max[:element]
       end
 
-      def extract_min
+      def extract_max
         return if is_empty?
-        minimum = min
+        maximum = max
         if @heap.size > 1
           last_value = @heap.last
           last_value[:index] = 0
           @heap = @heap.slice(0..@heap.size-2)
           @heap[0] = last_value
-          heapify(min)
+          heapify(max)
         else
           @heap =[  ]
         end
 
-        return minimum[:element]
+        return maximum[:element]
       end
     end
   end
