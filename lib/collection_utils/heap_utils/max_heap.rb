@@ -40,16 +40,12 @@ module CollectionUtils
       def initialize(array = [])
         @heap = []
         array.each_with_index do |element, index|
-          value = {element: element, index: index}
-          if @heap.empty?
-            @heap << value
-            next
-          end
-          insert(value)
+          insert(element)
         end
       end
 
       def insert(value)
+        value = {element: element, index: size}
         @heap << value
         i = @heap.size - 1
         node, index = parent(i)
