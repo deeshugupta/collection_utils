@@ -1,7 +1,13 @@
 require "bundler/setup"
-require "collection_utils"
+require 'simplecov'
 require 'coveralls'
-Coveralls.wear!
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+  SimpleCov::Formatter::HTMLFormatter,
+  Coveralls::SimpleCov::Formatter
+]
+SimpleCov.start
+require "collection_utils"
+
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
