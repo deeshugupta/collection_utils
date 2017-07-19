@@ -1,7 +1,7 @@
-require_relative './heap'
+require_relative '../heap'
 module CollectionUtils
   module HeapUtils
-    class MinHeap < Heap
+    class MinHeap < CollectionUtils::Heap
 
       private
       attr_accessor :heap
@@ -14,8 +14,8 @@ module CollectionUtils
       end
 
       def heapify(node)
-        left = left_child(node[:index]).first
-        right = right_child(node[:index]).first
+        left = left(node[:index])
+        right = right(node[:index])
         smallest = node
         if !left.nil? && left[:element] < node[:element]
           smallest = left
@@ -32,9 +32,6 @@ module CollectionUtils
 
       end
 
-      def min
-        @heap.first
-      end
 
       public
       def initialize(array = [])
@@ -56,22 +53,27 @@ module CollectionUtils
         end
       end
 
+
+      # @return element which has minimum value in heap
       def get_min
         return if is_empty?
-        return min[:element]
+        return root[:element]
       end
 
+      # Removes the minimum value element from heap and
+      # corrects the whole heap again
+      # @return minimum value element
       def extract_min
         return if is_empty?
-        minimum = min
+        minimum = root
         if @heap.size > 1
           last_value = @heap.last
           last_value[:index] = 0
           @heap = @heap.slice(0..@heap.size-2)
           @heap[0] = last_value
-          heapify(min)
+          heapify(root)
         else
-          @heap =[  ]
+          @heap =[]
         end
 
         return minimum[:element]

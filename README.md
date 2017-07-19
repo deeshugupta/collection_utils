@@ -1,6 +1,6 @@
 # CollectionUtils [![Build Status](https://travis-ci.org/deeshugupta/collection_utils.svg?branch=master)](https://travis-ci.org/deeshugupta/collection_utils)
 
-CollectionUtils provide with basic collection templates like stack, queues and heaps e.t.c for easier development. 
+CollectionUtils provide with basic collection templates like stack, queues and heaps e.t.c for easier development.
 
 ## Installation
 
@@ -20,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+check out the wiki at https://github.com/deeshugupta/collection_utils/wiki for usages.
 
 ## Development
 

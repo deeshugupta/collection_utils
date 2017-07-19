@@ -1,7 +1,7 @@
-require_relative './heap'
+require_relative '../heap'
 module CollectionUtils
   module HeapUtils
-    class MaxHeap < Heap
+    class MaxHeap < CollectionUtils::Heap
 
       private
       attr_accessor :heap
@@ -14,8 +14,8 @@ module CollectionUtils
       end
 
       def heapify(node)
-        left = left_child(node[:index]).first
-        right = right_child(node[:index]).first
+        left = left(node[:index])
+        right = right(node[:index])
         largest = node
         if !left.nil? && left[:element] >= node[:element]
           largest = left
@@ -32,10 +32,6 @@ module CollectionUtils
 
       end
 
-      def max
-        @heap.first
-      end
-
       public
       def initialize(array = [])
         @heap = []
@@ -44,7 +40,7 @@ module CollectionUtils
         end
       end
 
-      def insert(value)
+      def insert(element)
         value = {element: element, index: size}
         @heap << value
         i = @heap.size - 1
@@ -56,20 +52,24 @@ module CollectionUtils
         end
       end
 
+      # @return element which has maximum value in heap
       def get_max
         return if is_empty?
-        return max[:element]
+        return root[:element]
       end
 
+     # Removes the maximum value element from heap and
+     # corrects the whole heap again
+     # @return maximum value element
       def extract_max
         return if is_empty?
-        maximum = max
+        maximum = root
         if @heap.size > 1
           last_value = @heap.last
           last_value[:index] = 0
           @heap = @heap.slice(0..@heap.size-2)
           @heap[0] = last_value
-          heapify(max)
+          heapify(root)
         else
           @heap =[  ]
         end

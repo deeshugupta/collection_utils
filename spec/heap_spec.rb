@@ -1,12 +1,12 @@
 require "spec_helper"
 
-RSpec.describe CollectionUtils::HeapUtils::Heap do
+RSpec.describe CollectionUtils::Heap do
   before(:each) do
     arr = [1,2,3,4,5]
-    @heap = CollectionUtils::HeapUtils::Heap.new(arr)
+    @heap = CollectionUtils::Heap.new(arr)
   end
   it "initializes Heap" do
-    expect(@heap.root).to be 1
+    expect(@heap.size).to be 5
   end
 
   it "tests bfs" do
