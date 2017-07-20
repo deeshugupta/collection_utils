@@ -19,10 +19,10 @@ module CollectionUtils
       # @param [Array] arr which will contain the nodes of tree in pre-order manner
       def pre_order(node, arr)
         return if node.nil?
-        left = left(node[:index])
-        right = right(node[:index])
+        left = left(node.index)
+        right = right(node.index)
 
-        arr << node[:element]
+        arr << node.element
         pre_order(left, arr) unless left.nil?
         pre_order(right, arr) unless right.nil?
 
@@ -36,12 +36,12 @@ module CollectionUtils
       # @param [Array] arr which will contain the nodes of tree in post-order manner
       def post_order(node, arr)
         return if node.nil?
-        left = left(node[:index])
-        right = right(node[:index])
+        left = left(node.index)
+        right = right(node.index)
 
         post_order(left, arr) unless left.nil?
         post_order(right, arr) unless right.nil?
-        arr << node[:element]
+        arr << node.element
         return
       end
 
@@ -52,11 +52,11 @@ module CollectionUtils
       # @param [Array] arr which will contain the nodes of tree in in-order manner
       def in_order(node, arr)
         return if node.nil?
-        left = left(node[:index])
-        right = right(node[:index])
+        left = left(node.index)
+        right = right(node.index)
 
         in_order(left, arr) unless left.nil?
-        arr << node[:element]
+        arr << node.element
         in_order(right, arr) unless right.nil?
         return
       end
@@ -84,7 +84,7 @@ module CollectionUtils
       # @param node is the element which needs to be assigned to left of the parent
       def assign_left(parent = 0, node)
         left = (2*parent + 1)
-        node[:index] = left
+        node.index = left
         @heap[left] = node
       end
 
@@ -93,7 +93,7 @@ module CollectionUtils
       # @param node is the element which needs to be assigned to right of the parent
       def assign_right(parent = 0, node)
         right = (2*parent + 2)
-        node[:index] = right
+        node.index = right
         @heap[right] = node
       end
 
@@ -144,7 +144,10 @@ module CollectionUtils
        #
        # @param element object that needs to be added to heap
        def push(element)
-         @heap << {element: element, index: size}
+         @heap << CollectionUtils::HashDeserializedObject.new({
+           element: element,
+           index: size
+           })
        end
 
        # pop an element from heap
@@ -152,7 +155,7 @@ module CollectionUtils
        # @return removed element
        def pop
          element = @heap.pop
-         return element[:element]
+         return element.element
        end
 
 
@@ -183,9 +186,9 @@ module CollectionUtils
          while true do
            node = queue.dequeue
            next if node.nil?
-           left = left(node[:index])
-           right = right(node[:index])
-           yield(node[:element]) if block_given?
+           left = left(node.index)
+           right = right(node.index)
+           yield(node.element) if block_given?
            queue.enqueue(left) unless left.nil?
            queue.enqueue(right) unless right.nil?
            break if queue.is_empty?
@@ -209,9 +212,9 @@ module CollectionUtils
          while true do
            node = stack.pop
            next if node.nil?
-           left = left(node[:index])
-           right = right(node[:index])
-           yield(node[:element]) if block_given?
+           left = left(node.index)
+           right = right(node.index)
+           yield(node.element) if block_given?
            stack.push(left) unless left.nil?
            stack.push(right) unless right.nil?
            break if stack.is_empty?

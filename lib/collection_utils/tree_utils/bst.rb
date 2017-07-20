@@ -1,4 +1,5 @@
 require_relative '../heap'
+require_relative '../hash_deserialized_object'
 module CollectionUtils
   module TreeUtils
     class BST < CollectionUtils::Tree
@@ -20,16 +21,22 @@ module CollectionUtils
         end
         if is_empty?
           @height = 1
-          @heap << {element: element, index: 0}
+          @heap << CollectionUtils::HashDeserializedObject.new({
+            element: element,
+            index: 0
+            })
           return
         end
         @height += 1
-        if element > node[:element]
-          right = right(node[:index])
+        if element > node.element
+          right = right(node.index)
           if right.nil?
-            parent = node[:index]
+            parent = node.index
             right_in = right_index(parent)
-            value = {element: element, index: right_in}
+            value = CollectionUtils::HashDeserializedObject.new({
+              element: element,
+              index: right_in
+            })
             assign_right(parent, value)
             return
           else
@@ -37,11 +44,14 @@ module CollectionUtils
             return
           end
         else
-          left = left(node[:index])
+          left = left(node.index)
           if left.nil?
-            parent = node[:index]
+            parent = node.index
             left_in = left_index(parent)
-            value = {element: element, index: left_in}
+            value = CollectionUtils::HashDeserializedObject.new({
+              element: element,
+              index: left_in
+              })
             assign_left(parent, value)
             return
           else
@@ -53,7 +63,7 @@ module CollectionUtils
       end
 
       def get_min
-        return root[:element]
+        return root.element
       end
 
       def is_empty?
