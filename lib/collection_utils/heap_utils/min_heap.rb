@@ -80,6 +80,7 @@ module CollectionUtils
 
         return minimum.element
       end
+      alias :delete :extract_min
     end
   end
 end

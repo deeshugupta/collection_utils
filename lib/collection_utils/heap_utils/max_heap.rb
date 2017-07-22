@@ -78,6 +78,8 @@ module CollectionUtils
 
         return maximum.element
       end
+
+      alias :delete :extract_max
     end
   end
 end

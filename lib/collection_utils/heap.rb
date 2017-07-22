@@ -143,20 +143,24 @@ module CollectionUtils
        # push element to heap
        #
        # @param element object that needs to be added to heap
-       def push(element)
+       def insert(element)
          @heap << CollectionUtils::HashDeserializedObject.new({
            element: element,
            index: size
            })
        end
 
+       alias :push :insert
+
        # pop an element from heap
        #
        # @return removed element
-       def pop
+       def delete
          element = @heap.pop
          return element.element
        end
+
+       alias :pop :delete
 
 
        # @return [Integer] size of heap
