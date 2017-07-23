@@ -4,12 +4,10 @@ module CollectionUtils
   module TreeUtils
     class BST < CollectionUtils::Tree
       private
-      attr_accessor :bst, :height
+      attr_accessor :root, :height
 
       public
       def initialize(arr = [])
-        @heap = []
-        @height = 0
         arr.each do |element|
           insert(element, root)
         end

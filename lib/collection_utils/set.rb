@@ -9,7 +9,7 @@ module CollectionUtils
         return val.hash, val
       end
       variables = instance_variables.inject(Hash.new(0)) {|h,e|
-        h[e] = x.instance_variable_get(e);h
+        h[e] = val.instance_variable_get(e);h
       }
       return variables.hash, val
     end
@@ -22,7 +22,7 @@ module CollectionUtils
       end
     end
 
-    def push(val)
+    def insert(val)
       key, value = get_key_value(val)
       @set[key] = value if @set[key].nil?
     end

@@ -1,28 +1,46 @@
 module CollectionUtils
     class Heap
       private
-      attr_accessor :heap
+      attr_accessor :root, :incomplete_set, :leaf_set, :size, :level
 
-      protected
+      class Node
+        attr_accessor :val, :left, :right, :parent, :level
 
+        def initialize(val, left=nil, right=nil, parent=nil, level=nil)
+          @val = val
+          @left = left
+          @right = right
+          @parent = parent
+          @level = level
+        end
 
-      #
-      # @return element which is at the root of the tree
-      def root
-        return @heap.first
+        def is_leaf?
+          left.nil? && right.nil?
+        end
+
+        def is_full?
+          !left.nil? && !right.nil?
+        end
+
+        def is_incomplete?
+          (!left.nil? && right.nil?) || (left.nil? && !right.nil?)
+        end
+
       end
 
+      private_constant :Node
 
+      protected
       # Traverse the tree in pre-order manner
       #
       # @param node current node being parsed
       # @param [Array] arr which will contain the nodes of tree in pre-order manner
       def pre_order(node, arr)
         return if node.nil?
-        left = left(node.index)
-        right = right(node.index)
+        left = node.left
+        right = node.right
 
-        arr << node.element
+        arr << node.val
         pre_order(left, arr) unless left.nil?
         pre_order(right, arr) unless right.nil?
 
@@ -36,12 +54,12 @@ module CollectionUtils
       # @param [Array] arr which will contain the nodes of tree in post-order manner
       def post_order(node, arr)
         return if node.nil?
-        left = left(node.index)
-        right = right(node.index)
+        left = node.left
+        right = node.right
 
         post_order(left, arr) unless left.nil?
         post_order(right, arr) unless right.nil?
-        arr << node.element
+        arr << node.val
         return
       end
 
@@ -52,125 +70,111 @@ module CollectionUtils
       # @param [Array] arr which will contain the nodes of tree in in-order manner
       def in_order(node, arr)
         return if node.nil?
-        left = left(node.index)
-        right = right(node.index)
+        left = node.left
+        right = node.right
 
         in_order(left, arr) unless left.nil?
-        arr << node.element
+        arr << node.val
         in_order(right, arr) unless right.nil?
         return
-      end
-
-
-      # @param [Integer] parent is the index for which left child needs to be founded. Default is 0
-      # @return left_child and index of that left child
-      def left_child(parent = 0)
-        left = (2*parent + 1)
-        return nil, nil if @heap[left].nil?
-        return @heap[left], left
-      end
-
-
-      # @param [Integer] parent is the index for which right child needs to be founded. Default is 0
-      # @return right_child and index of that right child
-      def right_child(parent = 0)
-        right = (2*parent + 2)
-        return nil, nil if @heap[right].nil?
-        return @heap[right], right
-      end
-
-
-      # @param parent is the index for which left child is added. Default is 0
-      # @param node is the element which needs to be assigned to left of the parent
-      def assign_left(parent = 0, node)
-        left = (2*parent + 1)
-        node.index = left
-        @heap[left] = node
-      end
-
-
-      # @param parent is the index for which right child is added. Default is 0
-      # @param node is the element which needs to be assigned to right of the parent
-      def assign_right(parent = 0, node)
-        right = (2*parent + 2)
-        node.index = right
-        @heap[right] = node
-      end
-
-      # @param parent for which left child index needs to be found
-      # @return [Integer] left child index
-      def left_index(parent = 0)
-        left = (2*parent + 1)
-      end
-
-      # @param parent for which right child index needs to be found
-      # @return [Integer] right child index
-      def right_index(parent = 0)
-        right = (2*parent + 2)
-      end
-
-      # @param child for which parent needs to be found
-      # @return element and parent index
-      def parent(child = 0)
-        par = child/2
-        return @heap[par], par
       end
 
 
       public
       #Constructors
       def initialize(array = [])
-        @heap = []
+        @size = 0
+        @root = nil
+        @incomplete_set = CollectionUtils::Set.new()
+        @leaf_set = CollectionUtils::Set.new()
         array.each do |element|
-          push(element)
+          insert(element)
         end
       end
-
-       #Public methods
-
-       # @param [Integer] parent index for which left child needs to be returned
-       # @return left child
-       def left(parent = 0)
-         left_child(parent).first
-       end
-
-       # @param [Integer] parent index for which right child needs to be returned
-       # @return right child
-       def right(parent = 0)
-         right_child(parent).first
-       end
 
        # push element to heap
        #
        # @param element object that needs to be added to heap
        def insert(element)
-         @heap << CollectionUtils::HashDeserializedObject.new({
-           element: element,
-           index: size
-           })
-       end
+         node = Node.new(element)
+         @size += 1
+         if @root.nil?
+           @root = node
+           @root.level = 1
+           @level = 1
+           @leaf_set.insert(node)
+           return
+         end
+         unless @incomplete_set.is_empty?
+           parent_node = @incomplete_set.get
+           @incomplete_set.delete(parent_node)
+           if parent_node.left.nil?
+             node.parent = parent_node
+             node.level = parent_node.level + 1
+             parent_node.left = node
+             @level = node.level if node.level > @level
+             @incomplete_set.insert(parent_node) if parent_node.right.nil?
+             @leaf_set.insert(node)
+             return
+           end
+           if parent_node.right.nil?
+             node.parent = parent_node
+             node.level = parent_node.level + 1
+             parent_node.right = node
+             @level = node.level if node.level > @level
+             @incomplete_set.insert(parent_node) if parent_node.left.nil?
+             @leaf_set.insert(node)
+             return
+           end
+         end
 
-       alias :push :insert
+         unless @leaf_set.is_empty?
+           parent_node = @leaf_set.get
+           @leaf_set.delete(parent_node)
+           node.parent = parent_node
+           node.level = parent_node.level + 1
+           parent_node.left = node
+           @level = node.level if node.level > @level
+           @incomplete_set.insert(parent_node)
+           @leaf_set.insert(node)
+           return
+         end
+
+       end
 
        # pop an element from heap
        #
        # @return removed element
        def delete
-         element = @heap.pop
-         return element.element
+         @size -= 1
+         node = @leaf_set.get
+         @leaf_set.delete(node)
+         parent = node.parent
+         value = node.val
+         if parent.is_leaf?
+           @incomplete_set.delete(parent)
+           node = nil
+           @leaf_set.insert(parent)
+         end
+         return value
        end
 
-       alias :pop :delete
-
+       def root
+         @root
+       end
 
        # @return [Integer] size of heap
        def size
-         return @heap.size
+        @size
        end
 
        # @return [Boolean] heap's emptiness
        def is_empty?
-         return size == 0
+        size == 0
+       end
+
+       def level
+         @level
        end
 
 
@@ -190,9 +194,9 @@ module CollectionUtils
          while true do
            node = queue.dequeue
            next if node.nil?
-           left = left(node.index)
-           right = right(node.index)
-           yield(node.element) if block_given?
+           left = node.left
+           right = node.right
+           yield(node.val) if block_given?
            queue.enqueue(left) unless left.nil?
            queue.enqueue(right) unless right.nil?
            break if queue.is_empty?
@@ -216,9 +220,9 @@ module CollectionUtils
          while true do
            node = stack.pop
            next if node.nil?
-           left = left(node.index)
-           right = right(node.index)
-           yield(node.element) if block_given?
+           left = node.left
+           right =node.right
+           yield(node.val) if block_given?
            stack.push(left) unless left.nil?
            stack.push(right) unless right.nil?
            break if stack.is_empty?
