@@ -154,6 +154,7 @@ module CollectionUtils
          if parent.is_leaf?
            @incomplete_set.delete(parent)
            node = nil
+           parent.left == node ? parent.left = nil : parent.right = nil
            @leaf_set.insert(parent)
          end
          return value
