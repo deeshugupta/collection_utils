@@ -5,8 +5,11 @@ RSpec.describe CollectionUtils::TreeUtils::BST do
     arr = [4,6,3,2,5,1]
     @bst = CollectionUtils::TreeUtils::BST.new(arr)
   end
-  it "initializes bst" do
-    expect(@bst.get_min).to be 4
+  it "finds smallest" do
+    expect(@bst.smallest).to be 1
+  end
+  it "finds largest" do
+    expect(@bst.largest).to be 6
   end
 
   it "tests inorder" do

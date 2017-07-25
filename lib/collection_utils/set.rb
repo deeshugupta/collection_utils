@@ -46,7 +46,7 @@ module CollectionUtils
     end
 
     def size
-      @set.size
+      @set.keys.size
     end
 
     def is_empty?

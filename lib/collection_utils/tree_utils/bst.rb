@@ -6,6 +6,7 @@ module CollectionUtils
 
       def delete_node(element, node)
         if element == node.val
+          @size -= 1
           @leaf_set.delete(node)
           if node.is_leaf?
             parent = node.parent
@@ -24,7 +25,7 @@ module CollectionUtils
             @leaf_set.insert(node) if node.is_leaf?
             return
           else
-            smallest = find_smallest(node)
+            smallest = find_right_smallest(node)
             if smallest.is_leaf?
               @leaf_set.delete(smallest)
               node.val = smallest.val
@@ -49,7 +50,7 @@ module CollectionUtils
         end
       end
 
-      def find_smallest(node)
+      def find_right_smallest(node)
         smallest = nil
         right = node.right
         unless right.nil?
@@ -60,9 +61,10 @@ module CollectionUtils
             left = left.left
           end
         end
+        return smallest
       end
 
-      def insert(node, parent_node)
+      def insert_node(node, parent_node)
         if node.val >= parent_node.val
           if parent_node.right.nil?
             @leaf_set.delete(parent_node)
@@ -72,7 +74,7 @@ module CollectionUtils
             @leaf_set.insert(node) if node.is_leaf?
             return
           else
-            insert(node, parent_node.right)
+            insert_node(node, parent_node.right)
           end
         else
           if parent_node.left.nil?
@@ -83,17 +85,46 @@ module CollectionUtils
             @leaf_set.insert(node) if node.is_leaf?
             return
           else
-            insert(node, parent_node.left)
+            insert_node(node, parent_node.left)
           end
         end
       end
 
       public
       def initialize(arr = [])
+        @size = 0
+        @root = nil
+        @incomplete_set = CollectionUtils::Set.new()
+        @leaf_set = CollectionUtils::Set.new()
         arr.each do |element|
-          insert(element, root)
+          insert(element)
         end
       end
+
+      # Insert would insert the next element in BST according to
+      # BST properties that is if element added is less than the parent_node
+      # then element will be at left side of the node else will be on the right
+      # side of the node. This operation is in O(logn)
+      # @param element Element which needs to be added to BST
+      # @example if tree has values [5,2,3,4]
+      # => @bst = CollectionUtils::TreeUtils::BST.new([5,2,3,4])
+      # => # BST would look like this
+      # => #    5
+      # => #   /
+      # => #  2
+      # => #   \
+      # => #    3
+      # => #     \
+      # => #      4
+      # => @bst.insert(6)
+      # => # Now BST would look like this
+      # => #    5
+      # => #   / \
+      # => #  2   6
+      # => #   \
+      # => #    3
+      # => #     \
+      # => #      4
 
       def insert(element)
         node = Node.new(element)
@@ -101,14 +132,89 @@ module CollectionUtils
           @root = node
           @root.level = 1
           @level = 1
+          @size += 1
           @leaf_set.insert(node)
           return
         end
-        insert(node, @root)
+        insert_node(node, @root)
       end
 
+      # Delete would delete the element in BST and balance the BST accordingly.
+      # The delete option uses the BST property that is every node has lesser value
+      # on the left side and larger value lies on the right side.
+      # This operation is in O(logn)
+      # @param element Element which needs to be deleted from BST
+      # @example if tree has values [5,2,3,4,6]
+      # => @bst = CollectionUtils::TreeUtils::BST.new([5,2,3,4])
+      # => # BST would look like this
+      # => #    5
+      # => #   / \
+      # => #  2   6
+      # => #   \
+      # => #    3
+      # => #     \
+      # => #      4
+      # => @bst.insert(5)
+      # => # Now BST would look like this
+      # => #    6
+      # => #   /
+      # => #  2
+      # => #   \
+      # => #    3
+      # => #     \
+      # => #      4
       def delete(element)
         delete_node(element, @root)
+      end
+
+      # Leftmost value will be the smallest value returned using this function
+      # This operation is in O(logn)
+      # @return element which is smallest in the BST
+      # @example if tree has values [5,2,3,4,6]
+      # => @bst = CollectionUtils::TreeUtils::BST.new([5,2,3,4])
+      # => # BST would look like this
+      # => #    5
+      # => #   / \
+      # => #  2   6
+      # => #   \
+      # => #    3
+      # => #     \
+      # => #      4
+      # => value = @bst.smallest
+      # => value == 2
+      def smallest
+        smallest = @root.val
+        left = @root.left
+        while left != nil do
+          smallest = left.val
+          left = left.left
+        end
+        return smallest
+      end
+
+      # Rightmost value will be the largest value returned using this function
+      # This operation is in O(logn)
+      # @return element which is largest in the BST
+      # @example if tree has values [5,2,3,4,6]
+      # => @bst = CollectionUtils::TreeUtils::BST.new([5,2,3,4])
+      # => # BST would look like this
+      # => #    5
+      # => #   / \
+      # => #  2   6
+      # => #   \
+      # => #    3
+      # => #     \
+      # => #      4
+      # => value = @bst.largest
+      # => value == 6
+      def largest
+        largest = @root.val
+        right = @root.right
+        while right != nil do
+          largest = right.val
+          right = right.right
+        end
+        return largest
       end
 
     end
