@@ -27,9 +27,30 @@ module CollectionUtils
     # => obj.name # CollectionUtils
     def insert(name, value)
       @original[name] = value
+      if value.class.name == "Hash" || value.class.superclass.name == "Hash"
+        value = CollectionUtils::HashDeserializedObject.new(value)
+      end
       name = convert_name(name.to_s)
       self.class.send(:attr_accessor, name)
       instance_variable_set("@#{name}", value)
+    end
+
+
+    # Delete the key value pair from deserialized object.
+    # This will rmeove the attr_accessor from object and key value from hash.
+    # @param name attr_accessor name to be deleted
+    # @return  value of the deleted attribute
+    # @example Delete from object
+    # => obj = CollectionUtils::HashDeserializedObject.new()
+    # => obj.insert(:name, "CollectionUtils")
+    # => obj.name #CollectionUtils
+    # => obj.insert(:type, "HashDeserializedObject")
+    # => obj.type #HashDeserializedObject
+    # => value = obj.delete(:name) #CollectionUtils
+    # => obj.get_serialized_object #{type: "HashDeserializedObject"}
+    def delete(name)
+      @original.delete(name)
+      return remove_instance_variable("@#{name.to_s}")
     end
 
     # Get original Hash used to build the object. It will grow as we insert more

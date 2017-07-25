@@ -75,6 +75,23 @@ module CollectionUtils
         end
       end
 
+      # This will insert the value in min heap. This takes O(logn) operations
+      # as adding the element will trigger the correction of the tree
+      # @param element which needs to be added into the min heap
+      # @example Min heap should add another element
+      # => @heap = CollectionUtils::HeapUtils::MinHeap.new([5,2,3,4])
+      # => # Min Heap would look like this
+      # => #     2
+      # => #    / \
+      # => #   5   3
+      # => #  /
+      # => # 4
+      # => @heap.insert(1)
+      # => #     1
+      # => #    / \
+      # => #   2   3
+      # => #  / \
+      # => # 4   5
       def insert(element)
         node = Node.new(element)
         @size += 1
@@ -118,15 +135,46 @@ module CollectionUtils
         end
       end
 
-      # @return element which has maximum value in heap
+      # Returns the minimum value element from heap and
+      # This is done in O(1) operations.
+      # @return minimum value
+      # @example Min heap should return minimum value
+      # => @heap = CollectionUtils::HeapUtils::MinHeap.new([5,2,3,4])
+      # => # Min Heap would look like this
+      # => #     2
+      # => #    / \
+      # => #   5   3
+      # => #  /
+      # => # 4
+      # => value = @heap.get_min
+      # => #     2
+      # => #    / \
+      # => #   5   3
+      # => #  /
+      # => # 4
+      # => # value = 2
       def get_min
         return if is_empty?
         return @root.val
       end
 
-     # Removes the maximum value element from heap and
-     # corrects the whole heap again
-     # @return minimum value element
+     # Removes the minimum value element from heap and
+     # corrects the whole heap again. This is done in O(logn) operations as
+     # correction of tree takes logn time
+     # @return minimum value
+     # @example Min heap should return minimum value
+     # => @heap = CollectionUtils::HeapUtils::MinHeap.new([5,2,3,4])
+     # => # Min Heap would look like this
+     # => #     2
+     # => #    / \
+     # => #   5   3
+     # => #  /
+     # => # 4
+     # => value = @heap.extract_min
+     # => #     3
+     # => #    / \
+     # => #   5   4
+     # => # value = 2
       def extract_min
         return if is_empty?
         if size == 1

@@ -95,6 +95,18 @@ module CollectionUtils
        # Adds an element to the heap. This is done in O(1) operations and
        # preference is given to incomplete nodes as compared to leaf nodes
        # @param element object that needs to be added to heap
+       # => @heap = CollectionUtils::Heap.new([5,2,6,4,3])
+       # => #      5
+       # => #     / \
+       # => #    2   6
+       # => #   / \
+       # => #  4   3
+       # => @heap.insert(7)
+       # => #        5
+       # => #      /  \
+       # => #    2     6
+       # => #   / \   /
+       # => #  4   3 7
        def insert(element)
          node = Node.new(element)
          @size += 1

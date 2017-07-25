@@ -75,6 +75,24 @@ module CollectionUtils
         end
       end
 
+      # Removes the maximum value element from heap and
+      # corrects the whole heap again. This is done in O(logn) operations as
+      # correction of tree takes logn time
+      # @return maximum value
+      # @example Max heap should return maximum value
+      # => @heap = CollectionUtils::HeapUtils::MaxHeap.new([5,2,3,4])
+      # => # Min Heap would look like this
+      # => #     5
+      # => #    / \
+      # => #   4   3
+      # => #  /
+      # => # 2
+      # => @heap.insert(6)
+      # => #     6
+      # => #    / \
+      # => #   5   3
+      # => #  / \
+      # => # 2   4
       def insert(element)
         node = Node.new(element)
         @size += 1
@@ -118,15 +136,45 @@ module CollectionUtils
         end
       end
 
-      # @return element which has maximum value in heap
+      # This will insert the value in max heap. This takes O(1) operations
+      # @return maximum value
+      # @example Max heap remove maximum value and return it
+      # => @heap = CollectionUtils::HeapUtils::MaxHeap.new([5,2,3,4])
+      # => # Max Heap would look like this
+      # => #     5
+      # => #    / \
+      # => #   4   3
+      # => #  /
+      # => # 2
+      # => value = @heap.get_max
+      # => #     5
+      # => #    / \
+      # => #   4   3
+      # => #  /
+      # => # 2
+      # => # value = 5
       def get_max
         return if is_empty?
         return @root.val
       end
 
-     # Removes the maximum value element from heap and
-     # corrects the whole heap again
-     # @return maximum value element
+      # This will insert the value in max heap. This takes O(logn) operations
+      # as adding the element will trigger the correction of the tree
+      # @return maximum value
+      # @example Max heap remove maximum value and return it
+      # => @heap = CollectionUtils::HeapUtils::MaxHeap.new([5,2,3,4])
+      # => # Max Heap would look like this
+      # => #     5
+      # => #    / \
+      # => #   4   3
+      # => #  /
+      # => # 2
+      # => value = @heap.extract_max
+      # => #     4
+      # => #    / \
+      # => #   2   3
+      # => #
+      # => # value = 5
       def extract_max
         return if is_empty?
         if size == 1
