@@ -92,8 +92,8 @@ module CollectionUtils
         end
       end
 
-       # push element to heap
-       #
+       # Adds an element to the heap. This is done in O(1) operations and
+       # preference is given to incomplete nodes as compared to leaf nodes
        # @param element object that needs to be added to heap
        def insert(element)
          node = Node.new(element)
@@ -142,9 +142,17 @@ module CollectionUtils
 
        end
 
-       # pop an element from heap
-       #
+       # Removes a random element from the leaf set and
+       # deletes it. This is done in O(1) operations.
        # @return removed element
+       # @example delete from heap [5,2,6,4,3]
+       # => @heap = CollectionUtils::Heap.new([5,2,6,4,3])
+       # => #      5
+       # => #     / \
+       # => #    2   6
+       # => #   / \
+       # => #  4   3
+       # => @heap.delete == 4 or 3 or 6
        def delete
          @size -= 1
          node = @leaf_set.get
@@ -164,20 +172,41 @@ module CollectionUtils
          return value
        end
 
+       # Returns the root of the tree
+       #
+       # @return element which is present at the root of the heap or tree
+       # @example Root of heap [5,2,6,4,3]
+       # => @heap = CollectionUtils::Heap.new([5,2,6,4,3])
+       # => #      5
+       # => #     / \
+       # => #    2   6
+       # => #   / \
+       # => #  4   3
+       # => @heap.root == 5
        def root
-         @root
+         @root.val
        end
 
+       # Returns the number of elements in a tree or heap. This is returned in
+       # O(1) operations as we are storing the size of the tree which is
+       # otherwise O(n) operations.
        # @return [Integer] size of heap
        def size
         @size
        end
 
+       # Returns whether the heap or tree is empty. This is just a syntax_sugar
+       # for size == 0
        # @return [Boolean] heap's emptiness
        def is_empty?
         size == 0
        end
 
+       # Returns the level of the tree. This is returned in O(1) operations
+       # as we are storing the level of the tree which is otherwise a costly
+       # operation
+       #
+       # @return [Integer] height or level of the heap or tree
        def level
          @level
        end
@@ -189,13 +218,13 @@ module CollectionUtils
        #    arr = [1,2,3,4,5]
        #    heap = CollectionUtils::Heap.new(arr)
        #    x = []
-       #    @heap.bfs do |element|
+       #    heap.bfs do |element|
        #      x << element
        #    end
        #    #x = [1,2,3,4,5]
        def bfs
          queue = CollectionUtils::Queue.new
-         queue.enqueue(root)
+         queue.enqueue(@root)
          while true do
            node = queue.dequeue
            next if node.nil?
@@ -215,13 +244,13 @@ module CollectionUtils
        #    arr = [1,2,3,4,5]
        #    heap = CollectionUtils::Heap.new(arr)
        #    x = []
-       #    @heap.dfs do |element|
+       #    heap.dfs do |element|
        #      x << element
        #    end
-       #    #x = [1,3,2,5,4]
+       #    #x = [1,3,5,4,2]
        def dfs
          stack = CollectionUtils::Stack.new
-         stack.push(root)
+         stack.push(@root)
          while true do
            node = stack.pop
            next if node.nil?
@@ -237,27 +266,51 @@ module CollectionUtils
        # Pre-Order Traversal of Tree
        #
        # @return [Array] elements of heap in pre-ordered manner
+       # @example Preorder Traversal for heap [5,2,6,4,3]
+       # => @heap = CollectionUtils::Heap.new([5,2,6,4,3])
+       # => #      5
+       # => #     / \
+       # => #    2   6
+       # => #   / \
+       # => #  4   3
+       # => arr = @heap.preorder #arr = [5,2,4,3,6]
        def preorder
          arr = []
-         pre_order(root, arr)
+         pre_order(@root, arr)
          return arr
        end
 
        # Post-Order Traversal of Tree
        #
        # @return [Array] elements of heap in post-ordered manner
+       # @example Postorder Traversal for heap [5,2,6,4,3]
+       # => @heap = CollectionUtils::Heap.new([5,2,6,4,3])
+       # => #      5
+       # => #     / \
+       # => #    2   6
+       # => #   / \
+       # => #  4   3
+       # => arr = @heap.postorder #arr = [4,3,2,6,5]
        def postorder
          arr = []
-         post_order(root, arr)
+         post_order(@root, arr)
          return arr
        end
 
        # In-Order Traversal of Tree
        #
        # @return [Array] elements of heap in in-ordered manner
+       # @example Inorder Traversal for heap [5,2,6,4,3]
+       # => @heap = CollectionUtils::Heap.new([5,2,6,4,3])
+       # => #      5
+       # => #     / \
+       # => #    2   6
+       # => #   / \
+       # => #  4   3
+       # => arr = @heap.inorder #arr = [4,2,3,5,6]
        def inorder
          arr = []
-         in_order(root, arr)
+         in_order(@root, arr)
          return arr
        end
 

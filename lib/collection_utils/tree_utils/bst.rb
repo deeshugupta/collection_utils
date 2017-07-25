@@ -8,24 +8,33 @@ module CollectionUtils
         if element == node.val
           @size -= 1
           @leaf_set.delete(node)
+          # if the node is leaf then add the parent to leaf set if
+          # parent.is_leaf? and assign the left or right to nil based on
+          # where the node is attached to the parent.
           if node.is_leaf?
             parent = node.parent
             @leaf_set.delete(parent)
             parent.left == node ? parent.left = nil : parent.right = nil
             @leaf_set.insert(parent) if parent.is_leaf?
             return
+          # if the right child is leaf for the node then exchange the value of
+          # right child and node and delete the right child.
           elsif node.right.is_leaf?
             node.val = node.right.val
             node.right = nil
             @leaf_set.insert(node) if node.is_leaf?
             return
+            # if the left child is leaf for the node then exchange the value of
+            # left child and node and delete the left child.
           elsif node.left.is_leaf?
             node.val = node.left.val
             node.left = nil
             @leaf_set.insert(node) if node.is_leaf?
             return
           else
-            smallest = find_right_smallest(node)
+            # find the smallest child on the right side and exchange the
+            # value with the node. Balance the tree accordingly.
+            smallest = find_smallest(node.right)
             if smallest.is_leaf?
               @leaf_set.delete(smallest)
               node.val = smallest.val
@@ -50,18 +59,24 @@ module CollectionUtils
         end
       end
 
-      def find_right_smallest(node)
-        smallest = nil
-        right = node.right
-        unless right.nil?
-          smallest = right
-          left = right.left
-          while !left.nil?
-            smallest = left
-            left = left.left
-          end
+      def find_smallest(node)
+        smallest = node.val
+        left = node.left
+        while left != nil do
+          smallest = left.val
+          left = left.left
         end
         return smallest
+      end
+
+      def find_largest(node)
+        largest = node.val
+        right = node.right
+        while right != nil do
+          largest = right.val
+          right = right.right
+        end
+        return largest
       end
 
       def insert_node(node, parent_node)
@@ -183,13 +198,7 @@ module CollectionUtils
       # => value = @bst.smallest
       # => value == 2
       def smallest
-        smallest = @root.val
-        left = @root.left
-        while left != nil do
-          smallest = left.val
-          left = left.left
-        end
-        return smallest
+        find_smallest(@root)
       end
 
       # Rightmost value will be the largest value returned using this function
@@ -208,13 +217,7 @@ module CollectionUtils
       # => value = @bst.largest
       # => value == 6
       def largest
-        largest = @root.val
-        right = @root.right
-        while right != nil do
-          largest = right.val
-          right = right.right
-        end
-        return largest
+        find_largest(@root)
       end
 
     end

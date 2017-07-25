@@ -18,7 +18,7 @@ module CollectionUtils
     #
     # @example Create a stack [1,2,3,4,5] and remove 5 using pop
     #   stack = CollectionUtils::Stack.new([1,2,3,4,5])
-    #   top_element = stack.pop()
+    #   top_element = stack.pop() # top_element = 5, stack = [1,2,3,4]
     def pop
       return @stack.pop
     end
@@ -36,6 +36,9 @@ module CollectionUtils
     end
 
     # @return [Boolean] stack's emptiness
+    # @example Create a stack [1,2,3,4,5] and add check emptiness.
+    #   stack = CollectionUtils::Stack.new([1,2,3,4,5])
+    #   stack.is_empty? # false
     def is_empty?
       return @stack.size == 0
     end
@@ -46,12 +49,15 @@ module CollectionUtils
     #
     # @example Create a stack [1,2,3,4,5] and get 5 using peek
     #   stack = CollectionUtils::Stack.new([1,2,3,4,5])
-    #   top_element = stack.peek # top_element = 5
+    #   top_element = stack.peek # top_element = 5, stack = [1,2,3,4,5]
     def peek
       return @stack.last
     end
 
     # @return [Integer] size of stack
+    # @example Create a stack [1,2,3,4,5] and check size.
+    #   stack = CollectionUtils::Stack.new([1,2,3,4,5])
+    #   stack.size # 5
     def size
       return @stack.size
     end

@@ -121,7 +121,7 @@ module CollectionUtils
       # @return element which has maximum value in heap
       def get_max
         return if is_empty?
-        return root.val
+        return @root.val
       end
 
      # Removes the maximum value element from heap and
