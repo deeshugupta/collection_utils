@@ -17,6 +17,14 @@ module CollectionUtils
       end
     end
 
+    def method_missing(method_name, *args, &block)
+      if method_name.to_s.include?"="
+        insert(method_name.to_s.split("=").first, args.first)
+      else
+        insert(method_name, nil)
+      end
+    end
+
     # Insert new key value pair in deserialized object.
     # This will create an attr_accessor with key and value as given value
     # @param name key of the hash
