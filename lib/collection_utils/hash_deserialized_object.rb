@@ -9,7 +9,14 @@ module CollectionUtils
       return attr_name.to_s.downcase.gsub(/[\s:+!\?\.\|\{\}\[\]\+\-\*\^%$#@]/, "_")
     end
 
+    def define_new_method(name, &block)
+       (class << self; self; end).class_eval do
+         define_method name, &block
+       end
+    end
+
     public
+
     def initialize(hash = {})
       @original = hash
       hash.each do |key, value|
@@ -17,12 +24,28 @@ module CollectionUtils
       end
     end
 
-    def method_missing(method_name, *args, &block)
-      if method_name.to_s.include?"="
-        insert(method_name.to_s.split("=").first, args.first)
-      else
-        insert(method_name, nil)
+    # Add arguments on the runtime. Define attr_accessor for the arguments
+    # and get original hash for the same. Delete the unecessary arguments using
+    # delete method
+    # @param [Symbol] argument_name name of the argument that needs to be added
+    # @param *args value of the argument
+    # @example Add argument on runtime
+    # => var = CollectionUtils::HashDeserializedObject.new
+    # => var.query.bool.must.match = "hello"
+    # => var.get_serialized_object #{:query=>{:bool=>{:must=>{"match"=>"hello"}}}}
+    def method_missing(argument_name, *args)
+      if argument_name.to_s == "original"
+        super
+        return
       end
+      name = argument_name
+      if name.to_s.include?"="
+        name = name.to_s.split("=").first
+        insert(name, args.first)
+      else
+        insert(name, {})
+      end
+      return instance_variable_get("@#{name}")
     end
 
     # Insert new key value pair in deserialized object.
@@ -41,6 +64,13 @@ module CollectionUtils
       name = convert_name(name.to_s)
       self.class.send(:attr_accessor, name)
       instance_variable_set("@#{name}", value)
+      define_singleton_method "#{name}=".to_sym do |arg|
+        @original[name] = arg
+        instance_variable_set("@#{name}", arg)
+      end
+      define_singleton_method "#{name}".to_sym do
+        instance_variable_get("@#{name}")
+      end
     end
 
 
@@ -58,6 +88,8 @@ module CollectionUtils
     # => obj.get_serialized_object #{type: "HashDeserializedObject"}
     def delete(name)
       @original.delete(name)
+      instance_eval("undef :#{name.to_s}")
+      instance_eval("undef :#{name.to_s}=")
       return remove_instance_variable("@#{name.to_s}")
     end
 
