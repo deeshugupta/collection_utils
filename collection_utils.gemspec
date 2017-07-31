@@ -11,7 +11,10 @@ Gem::Specification.new do |spec|
 
   spec.summary       = ""
   spec.description   = "CollectionUtils provide with basic collection templates
-  like stack, queues and heaps e.t.c for easier development."
+  like stack(push, pop, peek), queues(enqueue, dequeue), heaps/tree(MinHeap, MaxHeap, BST)
+  and HashDeserializedObject(Converts a hash into object for easy access.
+  All the keys will become attributes of the object). 
+  Check out the wiki at https://github.com/deeshugupta/collection_utils/wiki"
   spec.homepage      = "https://github.com/deeshugupta/collection_utils"
   spec.license       = "MIT"
 
