@@ -93,6 +93,15 @@ module CollectionUtils
       return remove_instance_variable("@#{name.to_s}")
     end
 
+    # @return [Boolean] returns whether the HashDeserializedObject is empty or not
+    # @example check whether the object is empty or not
+    # => obj = CollectionUtils::HashDeserializedObject.new()
+    # => obj.empty? #true
+    # => obj.nil? #false
+    def empty?
+      return @original.empty?
+    end
+
     # Get original Hash used to build the object. It will grow as we insert more
     # values in the object
     # @return [Hash] original hash used to build the object
