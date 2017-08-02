@@ -1,4 +1,4 @@
-# CollectionUtils [![Build Status](https://travis-ci.org/deeshugupta/collection_utils.svg?branch=master)](https://travis-ci.org/deeshugupta/collection_utils)  [![Coverage Status](https://coveralls.io/repos/github/deeshugupta/collection_utils/badge.svg?branch=master)](https://coveralls.io/github/deeshugupta/collection_utils?branch=master) [![Gem Version](https://badge.fury.io/rb/collection_utils.svg)](https://badge.fury.io/rb/collection_utils)
+# CollectionUtils [![Build Status](https://travis-ci.org/deeshugupta/collection_utils.svg?branch=master)](https://travis-ci.org/deeshugupta/collection_utils)  [![Coverage Status](https://coveralls.io/repos/github/deeshugupta/collection_utils/badge.svg?branch=master)](https://coveralls.io/github/deeshugupta/collection_utils?branch=master) [![Gem Version](https://badge.fury.io/rb/collection_utils.svg)](https://badge.fury.io/rb/collection_utils) [![Inline docs](http://inch-ci.org/github/deeshugupta/collection_utils.svg?branch=master)](http://inch-ci.org/github/deeshugupta/collection_utils)
 
 CollectionUtils provide with basic collection templates like stack, queues and heaps e.t.c for easier development.
 
